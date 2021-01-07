@@ -65,11 +65,11 @@ build/libffi/installed/lib/libffi.a: build/libffi/Makefile
 
 build/libiconv32/Makefile: libiconv/configure
 	@mkdir -p $(@D)
-	cd $(@D) ; ../../libiconv/configure --host=i686-w64-mingw32 --prefix=$(abspath build/i686-w64-mingw32)
+	cd $(@D) ; LDFLAGS=$(HANGOVER_MINGW_LDFLAGS) ../../libiconv/configure --host=i686-w64-mingw32 --prefix=$(abspath build/i686-w64-mingw32)
 
 build/libiconv64/Makefile: libiconv/configure
 	@mkdir -p $(@D)
-	cd $(@D) ; ../../libiconv/configure --host=x86_64-w64-mingw32 --prefix=$(abspath build/x86_64-w64-mingw32)
+	cd $(@D) ; LDFLAGS=$(HANGOVER_MINGW_LDFLAGS) ../../libiconv/configure --host=x86_64-w64-mingw32 --prefix=$(abspath build/x86_64-w64-mingw32)
 
 build/i686-w64-mingw32/bin/libcharset-1.dll: build/libiconv32/Makefile
 	@mkdir -p $(@D)
@@ -84,11 +84,11 @@ libxml2/configure: libxml2/autogen.sh
 
 build/libxml2_32/Makefile: libxml2/configure build/i686-w64-mingw32/bin/libcharset-1.dll
 	@mkdir -p $(@D)
-	cd $(@D) ; ../../libxml2/configure --host=i686-w64-mingw32 --enable-static=no --enable-shared=yes --without-python --without-zlib --without-lzma --with-iconv=$(abspath build/i686-w64-mingw32) --prefix=$(abspath build/i686-w64-mingw32)
+	cd $(@D) ; LDFLAGS=$(HANGOVER_MINGW_LDFLAGS) ../../libxml2/configure --host=i686-w64-mingw32 --enable-static=no --enable-shared=yes --without-python --without-zlib --without-lzma --with-iconv=$(abspath build/i686-w64-mingw32) --prefix=$(abspath build/i686-w64-mingw32)
 
 build/libxml2_64/Makefile: libxml2/configure build/x86_64-w64-mingw32/bin/libcharset-1.dll
 	@mkdir -p $(@D)
-	cd $(@D) ; ../../libxml2/configure --host=x86_64-w64-mingw32 --enable-static=no --enable-shared=yes --without-python --without-zlib --without-lzma --with-iconv=$(abspath build/x86_64-w64-mingw32) --prefix=$(abspath build/x86_64-w64-mingw32)
+	cd $(@D) ; LDFLAGS=$(HANGOVER_MINGW_LDFLAGS) ../../libxml2/configure --host=x86_64-w64-mingw32 --enable-static=no --enable-shared=yes --without-python --without-zlib --without-lzma --with-iconv=$(abspath build/x86_64-w64-mingw32) --prefix=$(abspath build/x86_64-w64-mingw32)
 
 build/i686-w64-mingw32/bin/libxml2-2.dll: build/libxml2_32/Makefile
 	@mkdir -p $(@D)
@@ -103,11 +103,11 @@ libxslt/configure: libxslt/autogen.sh
 
 build/libxslt32/Makefile: libxslt/configure build/i686-w64-mingw32/bin/libxml2-2.dll
 	@mkdir -p $(@D)
-	cd $(@D) ; ../../libxslt/configure --host=i686-w64-mingw32 --enable-static=no --enable-shared=yes --without-python --without-plugins --without-crypto --prefix=$(abspath build/i686-w64-mingw32) PATH=$(abspath build/i686-w64-mingw32/bin):$(PATH) PKG_CONFIG_PATH=$(abspath build/i686-w64-mingw32/lib/pkgconfig) LDFLAGS="-L$(abspath build/i686-w64-mingw32/lib) -lxml2 -liconv"
+	cd $(@D) ; ../../libxslt/configure --host=i686-w64-mingw32 --enable-static=no --enable-shared=yes --without-python --without-plugins --without-crypto --prefix=$(abspath build/i686-w64-mingw32) PATH=$(abspath build/i686-w64-mingw32/bin):$(PATH) PKG_CONFIG_PATH=$(abspath build/i686-w64-mingw32/lib/pkgconfig) LDFLAGS="-L$(abspath build/i686-w64-mingw32/lib) -lxml2 -liconv $(HANGOVER_MINGW_LDFLAGS)"
 
 build/libxslt64/Makefile: libxslt/configure build/x86_64-w64-mingw32/bin/libxml2-2.dll
 	@mkdir -p $(@D)
-	cd $(@D) ; ../../libxslt/configure --host=x86_64-w64-mingw32 --enable-static=no --enable-shared=yes --without-python --without-plugins --without-crypto --prefix=$(abspath build/x86_64-w64-mingw32) PATH=$(abspath build/x86_64-w64-mingw32/bin):$(PATH) PKG_CONFIG_PATH=$(abspath build/x86_64-w64-mingw32/lib/pkgconfig) LDFLAGS="-L$(abspath build/x86_64-w64-mingw32/lib) -lxml2 -liconv"
+	cd $(@D) ; ../../libxslt/configure --host=x86_64-w64-mingw32 --enable-static=no --enable-shared=yes --without-python --without-plugins --without-crypto --prefix=$(abspath build/x86_64-w64-mingw32) PATH=$(abspath build/x86_64-w64-mingw32/bin):$(PATH) PKG_CONFIG_PATH=$(abspath build/x86_64-w64-mingw32/lib/pkgconfig) LDFLAGS="-L$(abspath build/x86_64-w64-mingw32/lib) -lxml2 -liconv $(HANGOVER_MINGW_LDFLAGS)"
 
 build/i686-w64-mingw32/bin/libxslt-1.dll: build/libxslt32/Makefile
 	@mkdir -p $(@D)
@@ -120,7 +120,7 @@ build/x86_64-w64-mingw32/bin/libxslt-1.dll: build/libxslt64/Makefile
 # Build the wine tools for crosscompilation
 build/wine-tools/Makefile: wine/configure
 	@mkdir -p $(@D)
-	cd $(@D) ; ../../wine/configure $(ARCHFLAG_TOOLS) --with-freetype --with-gettext --disable-tests --without-alsa --without-capi --without-cms --without-coreaudio --without-cups --without-curses --without-dbus --without-fontconfig --without-gphoto --without-glu --without-gnutls --without-gsm --without-gstreamer --without-hal --without-jpeg --without-krb5 --without-ldap --without-mpg123 --without-netapi --without-openal --without-opencl --without-opengl --without-osmesa --without-oss --without-pcap --without-pulse --without-png --without-sane --without-tiff --without-v4l2 --without-x --without-xcomposite --without-xcursor --without-xinerama --without-xinput --without-xinput2 --without-xml --without-xrandr --without-xrender --without-xshape --without-xshm --without-xslt --without-xxf86vm --without-zlib
+	cd $(@D) ; CC=$(HANGOVER_WINE_CC) CXX=$(HANGOVER_WINE_CXX) ../../wine/configure $(ARCHFLAG_TOOLS) --with-freetype --with-gettext --disable-tests --without-alsa --without-capi --without-cms --without-coreaudio --without-cups --without-curses --without-dbus --without-fontconfig --without-gphoto --without-glu --without-gnutls --without-gsm --without-gstreamer --without-hal --without-jpeg --without-krb5 --without-ldap --without-mpg123 --without-netapi --without-openal --without-opencl --without-opengl --without-osmesa --without-oss --without-pcap --without-pulse --without-png --without-sane --without-tiff --without-v4l2 --without-x --without-xcomposite --without-xcursor --without-xinerama --without-xinput --without-xinput2 --without-xml --without-xrandr --without-xrender --without-xshape --without-xshm --without-xslt --without-xxf86vm --without-zlib
 
 build/wine-tools/.built: build/wine-tools/Makefile
 	+$(MAKE) -C build/wine-tools tools tools/sfnt2fon tools/widl tools/winebuild tools/winegcc tools/wmc tools/wrc
@@ -140,7 +140,7 @@ wine-host build/wine-host/.built: build/wine-host/Makefile
 # Cross-Compile Wine for the guest platform to copy higher level DLLs from.
 build/wine-guest/Makefile: build/wine-host/.built wine/configure build/x86_64-w64-mingw32/bin/libxml2-2.dll build/x86_64-w64-mingw32/bin/libxslt-1.dll
 	@mkdir -p $(@D)
-	cd build/wine-guest ; ../../wine/configure --host=x86_64-w64-mingw32 --without-mingw --with-wine-tools=../wine-tools --without-freetype $(TESTS) --with-xml --with-xslt  XML2_CFLAGS="-I$(abspath build/x86_64-w64-mingw32/include/libxml2) -I$(abspath build/x86_64-w64-mingw32/include)" XML2_LIBS="-L$(abspath build/x86_64-w64-mingw32/lib) -lxml2 -liconv"  XSLT_CFLAGS="-I$(abspath build/x86_64-w64-mingw32/include/libxml2) -I$(abspath build/x86_64-w64-mingw32/include)" XSLT_LIBS="-L$(abspath build/x86_64-w64-mingw32/lib) -lxslt -lxml2 -liconv" ac_cv_lib_soname_xslt="libxslt-1.dll"
+	cd build/wine-guest ; LDFLAGS=$(HANGOVER_MINGW_LDFLAGS) ../../wine/configure --host=x86_64-w64-mingw32 --without-mingw --with-wine-tools=../wine-tools --without-freetype $(TESTS) --with-xml --with-xslt  XML2_CFLAGS="-I$(abspath build/x86_64-w64-mingw32/include/libxml2) -I$(abspath build/x86_64-w64-mingw32/include)" XML2_LIBS="-L$(abspath build/x86_64-w64-mingw32/lib) -lxml2 -liconv"  XSLT_CFLAGS="-I$(abspath build/x86_64-w64-mingw32/include/libxml2) -I$(abspath build/x86_64-w64-mingw32/include)" XSLT_LIBS="-L$(abspath build/x86_64-w64-mingw32/lib) -lxslt -lxml2 -liconv" ac_cv_lib_soname_xslt="libxslt-1.dll"
 
 build/wine-guest/.built: build/wine-guest/Makefile
 	+$(MAKE) -C build/wine-guest/libs/port
@@ -150,7 +150,7 @@ build/wine-guest/.built: build/wine-guest/Makefile
 # Cross-Compile Wine for the guest32 platform to copy higher level DLLs from.
 build/wine-guest32/Makefile: build/wine-host/.built wine/configure build/i686-w64-mingw32/bin/libxml2-2.dll build/i686-w64-mingw32/bin/libxslt-1.dll
 	@mkdir -p $(@D)
-	cd build/wine-guest32 ; ../../wine/configure --host=i686-w64-mingw32 --without-mingw --with-wine-tools=../wine-tools --without-freetype $(TESTS) --with-xml --with-xslt  XML2_CFLAGS="-I$(abspath build/i686-w64-mingw32/include/libxml2) -I$(abspath build/i686-w64-mingw32/include)" XML2_LIBS="-L$(abspath build/i686-w64-mingw32/lib) -lxml2 -liconv"  XSLT_CFLAGS="-I$(abspath build/i686-w64-mingw32/include/libxml2) -I$(abspath build/i686-w64-mingw32/include)" XSLT_LIBS="-L$(abspath build/i686-w64-mingw32/lib) -lxslt -lxml2 -liconv" ac_cv_lib_soname_xslt="libxslt-1.dll"
+	cd build/wine-guest32 ; LDFLAGS=$(HANGOVER_MINGW_LDFLAGS) ../../wine/configure --host=i686-w64-mingw32 --without-mingw --with-wine-tools=../wine-tools --without-freetype $(TESTS) --with-xml --with-xslt  XML2_CFLAGS="-I$(abspath build/i686-w64-mingw32/include/libxml2) -I$(abspath build/i686-w64-mingw32/include)" XML2_LIBS="-L$(abspath build/i686-w64-mingw32/lib) -lxml2 -liconv"  XSLT_CFLAGS="-I$(abspath build/i686-w64-mingw32/include/libxml2) -I$(abspath build/i686-w64-mingw32/include)" XSLT_LIBS="-L$(abspath build/i686-w64-mingw32/lib) -lxslt -lxml2 -liconv" ac_cv_lib_soname_xslt="libxslt-1.dll"
 
 build/wine-guest32/.built: build/wine-guest32/Makefile
 	+$(MAKE) -C build/wine-guest32/libs/port
